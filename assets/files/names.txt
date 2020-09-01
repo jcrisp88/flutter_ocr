@@ -1666,7 +1666,6 @@ Vienna Malt
 Vienna Millet Malt
 Vienna Schooner
 Voodoo Schooner
-Wheat
 Wheat Malt
 Wheat Malt Black
 Wheat Malt Dark
