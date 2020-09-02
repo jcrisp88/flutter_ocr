@@ -109,25 +109,27 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Text _buildBbeText() {
-    return Text(
-      'BBE:',
-      style: TextStyle(fontSize: 20),
-    );
-  }
+  // Text _buildBbeText() {
+  //   return Text(
+  //     'BBE:',
+  //     style: TextStyle(fontSize: 20),
+  //   );
+  // }
 
   Text _buildTypeText() {
-    List<String> typeText = imageText
-        .where((element) => Constants.types.indexOf(element.toLowerCase()) >= 0)
-        .toList();
-    if (typeText.isNotEmpty) {
-      return Text(
-        'Type: ${typeText[0]}',
-        style: TextStyle(fontSize: 20),
-      );
+    String visionString;
+    String type = '';
+    final regex = RegExp(r'(malt|yeast|hops)', caseSensitive: false);
+    if (visionText != null) {
+      visionString = visionText.text.replaceAll(RegExp(r"\s+\b|\b\s"), '');
+      final regexMatches = regex.allMatches(visionString);
+      for (var element in regexMatches) {
+        type = visionString.substring(element.start, element.end).toLowerCase();
+      }
     }
+
     return Text(
-      'Type:',
+      'Type: $type',
       style: TextStyle(fontSize: 20),
     );
   }
@@ -189,12 +191,13 @@ class _HomePageState extends State<HomePage> {
   Text _buildWeightText() {
     String visionString;
     String weight;
-    final regex = RegExp(r'([0-9]+[.,]*)+(?:g|kg)');
+    final regex = RegExp(r'([0-9]+[.,]*)+(?:g|kg|lb|oz)', caseSensitive: false);
     if (visionText != null) {
       visionString = visionText.text.replaceAll(RegExp(r"\s+\b|\b\s"), '');
       final regexMatches = regex.allMatches(visionString);
       for (var element in regexMatches) {
-        weight = visionString.substring(element.start, element.end);
+        weight =
+            visionString.substring(element.start, element.end).toLowerCase();
       }
     }
     if (weight != null) {
