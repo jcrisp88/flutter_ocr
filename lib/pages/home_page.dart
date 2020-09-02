@@ -44,6 +44,7 @@ class _HomePageState extends State<HomePage> {
       for (TextLine line in block.lines) {
         for (TextElement word in line.elements) {
           imageText.add(word.text);
+          setState(() {});
         }
       }
     }
