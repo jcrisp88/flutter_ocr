@@ -1,12 +1,10 @@
 import 'dart:convert';
 import 'dart:io' as io;
-import 'package:supercharged/supercharged.dart';
 
 import 'package:firebase_ml_vision/firebase_ml_vision.dart';
 import 'package:flutter/material.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:flutter_ocr/utils/constants.dart';
 import 'package:flutter/services.dart' show rootBundle;
 
 class HomePage extends StatefulWidget {
@@ -92,10 +90,6 @@ class _HomePageState extends State<HomePage> {
                   child: Text('Read Image Text'),
                   onPressed: _readImageText,
                 ),
-                // RaisedButton(
-                //   child: Text('Read From file'),
-                //   onPressed: () => _readNamesFile('names'),
-                // ),
                 SizedBox(height: 10),
                 _buildTypeText(),
                 _buildProductText(),
@@ -141,6 +135,7 @@ class _HomePageState extends State<HomePage> {
       builder: (context, fileTextSnapshot) {
         if (fileTextSnapshot.hasData) {
           for (var word in fileTextSnapshot.data) {
+            print('word => $word');
             final regex = RegExp(word, caseSensitive: false);
             if (visionText != null) {
               var regexMatches = regex.allMatches(visionText.text);
@@ -164,7 +159,7 @@ class _HomePageState extends State<HomePage> {
     var productName = ' ';
 
     return FutureBuilder<List<String>>(
-      future: _readNamesFile('names'),
+      future: _readNamesFile('product_names'),
       builder: (context, fileTextSnapshot) {
         if (fileTextSnapshot.hasData) {
           for (var word in fileTextSnapshot.data) {
