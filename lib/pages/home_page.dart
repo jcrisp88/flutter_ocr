@@ -21,9 +21,9 @@ class _HomePageState extends State<HomePage> {
   io.File _pickedImage;
   final _picker = ImagePicker();
 
-  Future _pickImage() async {
+  Future _pickImage(ImageSource imageSource) async {
     imageText.clear();
-    final pickedFile = await _picker.getImage(source: ImageSource.gallery);
+    final pickedFile = await _picker.getImage(source: imageSource);
     if (pickedFile != null) {
       _pickedImage = io.File(pickedFile.path);
       io.File cropped = await ImageCropper.cropImage(
@@ -199,8 +199,13 @@ class _HomePageState extends State<HomePage> {
                   style: TextStyle(fontSize: 26),
                 ),
                 RaisedButton(
-                  child: Text('Pick an image'),
-                  onPressed: _pickImage,
+                  child: Text('Pick an image from gallery'),
+                  onPressed: () => _pickImage(ImageSource.gallery),
+                ),
+                SizedBox(height: 10),
+                RaisedButton(
+                  child: Text('Pick an image from camera'),
+                  onPressed: () => _pickImage(ImageSource.camera),
                 ),
                 SizedBox(height: 10),
                 RaisedButton(
