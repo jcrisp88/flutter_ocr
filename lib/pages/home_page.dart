@@ -13,12 +13,13 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  io.File _pickedImage;
-  final _picker = ImagePicker();
-  bool _isImageLoaded = false;
+  String fileText;
   List<String> imageText = [];
   VisionText visionText;
-  String fileText;
+
+  bool _isImageLoaded = false;
+  io.File _pickedImage;
+  final _picker = ImagePicker();
 
   Future _pickImage() async {
     imageText.clear();
@@ -55,61 +56,23 @@ class _HomePageState extends State<HomePage> {
     return LineSplitter().convert(fileText);
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        body: Center(
-          child: SingleChildScrollView(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                _isImageLoaded
-                    ? Center(
-                        child: Container(
-                          height: 200,
-                          width: 200,
-                          decoration: BoxDecoration(
-                            image: DecorationImage(
-                              image: FileImage(_pickedImage),
-                              fit: BoxFit.cover,
-                            ),
-                          ),
-                        ),
-                      )
-                    : Container(),
-                Text(
-                  imageText.toString(),
-                  style: TextStyle(fontSize: 26),
-                ),
-                RaisedButton(
-                  child: Text('Pick an image'),
-                  onPressed: _pickImage,
-                ),
-                SizedBox(height: 10),
-                RaisedButton(
-                  child: Text('Read Image Text'),
-                  onPressed: _readImageText,
-                ),
-                SizedBox(height: 10),
-                _buildTypeText(),
-                _buildProductText(),
-                _buildWeightText(),
-                _buildCompanyText(),
-              ],
-            ),
-          ),
-        ),
-      ),
+  Text _buildBbeText() {
+    String visionString;
+    String bbe = '';
+    final regex = RegExp(r'[0-3]?[0-9]/[0-3]?[0-9]/(?:[0-9]{2})?[0-9]{2}',
+        caseSensitive: false);
+    if (visionText != null) {
+      visionString = visionText.text.replaceAll(RegExp(r"\s+\b|\b\s"), '');
+      final regexMatches = regex.allMatches(visionString);
+      for (var element in regexMatches) {
+        bbe = visionString.substring(element.start, element.end).toLowerCase();
+      }
+    }
+    return Text(
+      'BBE: $bbe',
+      style: TextStyle(fontSize: 20),
     );
   }
-
-  // Text _buildBbeText() {
-  //   return Text(
-  //     'BBE:',
-  //     style: TextStyle(fontSize: 20),
-  //   );
-  // }
 
   Text _buildTypeText() {
     String visionString;
@@ -121,6 +84,7 @@ class _HomePageState extends State<HomePage> {
       for (var element in regexMatches) {
         type = visionString.substring(element.start, element.end).toLowerCase();
       }
+      type = 'others';
     }
 
     return Text(
@@ -136,7 +100,6 @@ class _HomePageState extends State<HomePage> {
       builder: (context, fileTextSnapshot) {
         if (fileTextSnapshot.hasData) {
           for (var word in fileTextSnapshot.data) {
-            print('word => $word');
             final regex = RegExp(word, caseSensitive: false);
             if (visionText != null) {
               var regexMatches = regex.allMatches(visionText.text);
@@ -205,6 +168,56 @@ class _HomePageState extends State<HomePage> {
     return Text(
       'Weight: ',
       style: TextStyle(fontSize: 20),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return SafeArea(
+      child: Scaffold(
+        body: Center(
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                _isImageLoaded && _pickedImage != null
+                    ? Center(
+                        child: Container(
+                          height: 200,
+                          width: 200,
+                          decoration: BoxDecoration(
+                            image: DecorationImage(
+                              image: FileImage(_pickedImage),
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                        ),
+                      )
+                    : Container(),
+                Text(
+                  imageText.toString(),
+                  style: TextStyle(fontSize: 26),
+                ),
+                RaisedButton(
+                  child: Text('Pick an image'),
+                  onPressed: _pickImage,
+                ),
+                SizedBox(height: 10),
+                RaisedButton(
+                  child: Text('Read Image Text'),
+                  onPressed: _readImageText,
+                ),
+                SizedBox(height: 10),
+                _buildTypeText(),
+                _buildProductText(),
+                _buildWeightText(),
+                _buildCompanyText(),
+                _buildBbeText(),
+              ],
+            ),
+          ),
+        ),
+      ),
     );
   }
 }
